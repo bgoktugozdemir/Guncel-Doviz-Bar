@@ -28,7 +28,8 @@ namespace DovizBar
         Uri url = new Uri("https://www.doviz.com");
         private WebClient client;
         HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
-        Point location;
+        private int position = 1;
+        private Screen scr;
 
         public Form1()
         {
@@ -37,34 +38,37 @@ namespace DovizBar
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            location = this.Location;
             rowDolar.Text = "";
             rowEuro.Text = "";
             dolarColor = txtDolar.ForeColor;
             euroColor = txtEuro.ForeColor;
             UpdateDoviz();
+            scr = Screen.FromPoint(this.Location);
+            this.Location = new Point(scr.WorkingArea.Right - this.Width, scr.WorkingArea.Top);
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            if (location.X == 1800 && location.Y == 0)
+            if (position % 4 == 0)
             {
-                this.Location = new Point(1800, 899);
+                this.Location = new Point(scr.WorkingArea.Right - this.Width, scr.WorkingArea.Top);
+                position++;
             }
-            else if (location.X == 1800 && location.Y == 899)
+            else if (position % 4 == 1)
             {
-                this.Location = new Point(0, 899);
+                this.Location = new Point(scr.WorkingArea.Right - this.Width, scr.WorkingArea.Bottom - this.Height);
+                position++;
             }
-            else if (location.X == 0 && location.Y == 899)
+            else if (position % 4 == 2)
             {
-                this.Location = new Point(0, 0);
+                this.Location = new Point(scr.WorkingArea.Left, scr.WorkingArea.Bottom - this.Height);
+                position++;
             }
-            else if (location.X == 0 && location.Y == 0)
+            else if (position % 4 == 3)
             {
-                this.Location = new Point(1800, 0);
+                this.Location = new Point(scr.WorkingArea.Left, scr.WorkingArea.Top);
+                position++;
             }
-
-            location = this.Location;
         }
 
         private void UpdateScreen(string dolar, string euro)
