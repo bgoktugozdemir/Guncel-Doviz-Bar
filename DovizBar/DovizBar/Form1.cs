@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 
 namespace DovizBar
 {
     public partial class Form1 : Form
     {
+        private const double Version = 1.1;
         private string arrowUp = "▲";
         private string arrowDown = "▼";
         private string oldDolar;
@@ -33,6 +38,7 @@ namespace DovizBar
 
         public Form1()
         {
+            CheckVersion();
             InitializeComponent();
         }
 
@@ -157,6 +163,59 @@ namespace DovizBar
         private void txtLastUpdate_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Coded with ♥ by bgoktugozdemir", "♥");
+        }
+
+        private void CheckVersion()
+        {
+            string parser;
+            //string currentVersion = string.Empty;
+            string versionTarget = "https://raw.githubusercontent.com/bgoktugozdemir/VersionChecker/master/version.json";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(versionTarget);
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    parser = reader.ReadToEnd();
+                }
+
+                var json = JsonConvert.DeserializeObject<JsonDoviz>(parser);
+                double CurrentVersion = json.version;
+
+                if (CurrentVersion > Version)
+                {
+                    if (json.imperativeUpdate)
+                    {
+                        MessageBox.Show($"Yeni sürüm mevcut! Bu güncellemeyi indirmeniz gerekmekte. {Version} => {CurrentVersion}","Zorunlu Güncelleme Mevcut", MessageBoxButtons.OK);
+                        //DownloadUpdate();
+                    }
+                    else
+                    {
+                        if (MessageBox.Show($"Yeni sürüm mevcut! Güncellemek ister misiniz? {Version} => {CurrentVersion}", "Güncelleme Mevcut", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            //DownloadUpdate();
+                        }
+                    }
+                }
+            }
+            catch (System.Net.WebException e)
+            {
+                MessageBox.Show(e.ToString());
+                MessageBox.Show("İnternet bağlantısı bulunamadı!", "Bağlantı Yok", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DownloadUpdate()
+        {
+            var path = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(@"https://drive.google.com/open?id=1wETwfYRHLlqWBkL6blaRDzS2n0zNxxTH", path + @"..\Döviz Bar\");
+                Process setupProcess = Process.Start(path + @"\DovizBar.exe"); //System.AppDomain.CurrentDomain.BaseDirectory
+                Environment.Exit(1);
+            }
         }
     }
 }

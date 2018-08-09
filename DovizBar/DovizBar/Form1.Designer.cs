@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.txtDolar = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -189,6 +190,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(1800, 0);
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
@@ -197,8 +199,9 @@
             this.MinimumSize = new System.Drawing.Size(120, 142);
             this.Name = "Form1";
             this.Opacity = 0.7D;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Form1";
+            this.Text = "Bar";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
@@ -220,5 +223,4 @@
         private System.Windows.Forms.Label txtEuro;
         private System.Windows.Forms.Timer timer2;
     }
-}
-
+} 
