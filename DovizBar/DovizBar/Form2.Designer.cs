@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.label1 = new System.Windows.Forms.Label();
             this.txtMilisecond = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,7 +50,7 @@
             // 
             // txtMilisecond
             // 
-            this.txtMilisecond.Location = new System.Drawing.Point(12, 27);
+            this.txtMilisecond.Location = new System.Drawing.Point(161, 27);
             this.txtMilisecond.Name = "txtMilisecond";
             this.txtMilisecond.Size = new System.Drawing.Size(105, 27);
             this.txtMilisecond.TabIndex = 1;
@@ -59,7 +60,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(123, 30);
+            this.label2.Location = new System.Drawing.Point(272, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 19);
             this.label2.TabIndex = 2;
@@ -68,7 +69,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(272, 30);
+            this.label3.Location = new System.Drawing.Point(123, 30);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(27, 19);
             this.label3.TabIndex = 4;
@@ -77,15 +78,16 @@
             // txtSecond
             // 
             this.txtSecond.BackColor = System.Drawing.Color.White;
-            this.txtSecond.Location = new System.Drawing.Point(161, 27);
+            this.txtSecond.Location = new System.Drawing.Point(12, 27);
             this.txtSecond.Name = "txtSecond";
             this.txtSecond.Size = new System.Drawing.Size(105, 27);
-            this.txtSecond.TabIndex = 3;
+            this.txtSecond.TabIndex = 0;
             this.txtSecond.Text = "5";
             this.txtSecond.TextChanged += new System.EventHandler(this.txtSecond_TextChanged);
             // 
             // button1
             // 
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.button1.Location = new System.Drawing.Point(313, 27);
             this.button1.Name = "button1";
@@ -97,6 +99,7 @@
             // 
             // Form2
             // 
+            this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
@@ -109,11 +112,12 @@
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.MaximumSize = new System.Drawing.Size(416, 148);
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form2";
+            this.Text = "Set Refresh Time";
             this.ResumeLayout(false);
             this.PerformLayout();
 

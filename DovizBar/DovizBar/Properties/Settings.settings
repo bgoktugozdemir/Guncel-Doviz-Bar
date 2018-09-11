@@ -3,7 +3,19 @@
   <Profiles />
   <Settings>
     <Setting Name="RefreshTime" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5000</Value>
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="DolarGoal" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="EuroGoal" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DolarGoalBool" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EuroGoalBool" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

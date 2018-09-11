@@ -25,13 +25,61 @@ namespace DovizBar.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
         public int RefreshTime {
             get {
                 return ((int)(this["RefreshTime"]));
             }
             set {
                 this["RefreshTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double DolarGoal {
+            get {
+                return ((double)(this["DolarGoal"]));
+            }
+            set {
+                this["DolarGoal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double EuroGoal {
+            get {
+                return ((double)(this["EuroGoal"]));
+            }
+            set {
+                this["EuroGoal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DolarGoalBool {
+            get {
+                return ((bool)(this["DolarGoalBool"]));
+            }
+            set {
+                this["DolarGoalBool"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EuroGoalBool {
+            get {
+                return ((bool)(this["EuroGoalBool"]));
+            }
+            set {
+                this["EuroGoalBool"] = value;
             }
         }
     }

@@ -15,45 +15,74 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using HtmlDocument = System.Windows.Forms.HtmlDocument;
 
 namespace DovizBar
 {
     public partial class Form1 : Form
     {
-        private const double Version = 1.0;
+        #region Variables
+
+        /* DOUBLE */
         private double averageDolar = 0;
-        private int updateCount = 2; //Thread -> 1, Normal -> 2
         private double averageEuro = 0;
+
+        /* INT */
+        private int updateCount = 1; //Thread -> 1, Normal -> 2
+        private int position = 0;
+
+        /* STRING */
         private string arrowUp = "▲";
-        private Color upColor = Color.GreenYellow;
         private string arrowDown = "▼";
-        private Color downColor = Color.Red;
         private string oldDolar;
-        private string currentDolar;
         private string oldEuro;
+        private string currentDolar;
         private string currentEuro;
+        private string html = String.Empty;
+
+        /* BOOL */
+        private bool alert = false;
+        private bool funMode = false;
+
+        /* COLOR */
+        private Color defaultCurrencyColor = Color.Gold;
+        private Color upColor = Color.GreenYellow;
+        private Color downColor = Color.Red;
+        //private Color RefreshColor = Color.Yellow;
+        private Color defaultTimeColor = Color.White;
         private Color dolarColor;
         private Color euroColor;
-        private Color dolarUpdateColor = Color.Yellow;
-        private Color euroUpdateColor = Color.Yellow;
-        private Color defaultTimeColor = Color.White;
 
-        Uri url = new Uri(@"https://www.widgets.investing.com/single-currency-crosses?theme=darkTheme&currency=9");
-        string html = String.Empty;
+        /* THREAD */
+        private Thread threadPull;
 
-        //Uri url = new Uri("https://www.doviz.com");
-        private WebClient client;
-        HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
-        private int position = 0;
+        /* SOUND */
+        private SoundPlayer alertSound = new SoundPlayer(Properties.Resources.AlertSound_2);
+        private SoundPlayer alertGoalSound = new SoundPlayer(Properties.Resources.AlertSound);
+
+        /* SCREEN */
         private Screen scr;
-        private bool alert = false;
-        SoundPlayer alertSound = new SoundPlayer(Properties.Resources.AlertSound_2);
 
+        //private Uri url = new Uri(@"https://www.widgets.investing.com/single-currency-crosses?theme=darkTheme&currency=9");
+        private Uri url = new Uri(
+            @"https://www.widgets.investing.com/live-currency-cross-rates?theme=lightTheme&hideTitle=true&pairs=66,18
+                                    ""%20width=""100%""%20height=""100%""%20frameborder=""0""%20allowtransparency=""true""%20marginwidth=""0""%20marginheight=""0"">
+                                    </iframe><div%20class=""poweredBy""%20style=""font-family:%20Arial,%20Helvetica,%20sans-serif;");
 
+        private HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+        private WebClient client;
+
+        #endregion
 
         public Form1()
         {
-            //CheckVersion();
+            Updater();
+            if (CheckVersion())
+            {
+                Application.Exit();
+                this.Close();
+            }
+            Control.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
         }
 
@@ -68,14 +97,23 @@ namespace DovizBar
             scr = Screen.FromPoint(this.Location);
             this.Location = new Point(scr.WorkingArea.Right - this.Width, scr.WorkingArea.Top);
 
+            PrepareThread();
+            threadPull.Start();
+
             SetRefreshTime();
             timer1.Enabled = true;
+            txtDolar.BackColor = Color.Transparent;
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
             position++;
             ChangePosition();
+        }
+
+        private void PrepareThread()
+        {
+            threadPull = new Thread(PullData);
         }
 
         private void ChangePosition()
@@ -92,7 +130,9 @@ namespace DovizBar
 
         private delegate void DelegateUpdateScreen();
 
-        private void UpdateScreen(string dolar, string percentDolar, string minDolar, string maxDolar, string euro, string percentEuro, string minEuro, string maxEuro)
+        private void UpdateScreen(string dolar, string percentDolar, string minDolar, string maxDolar,
+            string euro, string percentEuro, string minEuro, string maxEuro,
+            string dolarBuy, string dolarSell, string euroBuy, string euroSell)
         {
             txtDolar.Text = dolar;
             txtEuro.Text = euro;
@@ -100,7 +140,7 @@ namespace DovizBar
             txtMinDolar.Text = minDolar;
             txtMaxDolar.Text = maxDolar;
             this.percentDolar.Text = percentDolar;
-            
+
             txtMinEuro.Text = minEuro;
             txtMaxEuro.Text = maxEuro;
             this.percentEuro.Text = percentEuro;
@@ -114,6 +154,7 @@ namespace DovizBar
                 this.percentDolar.ForeColor = downColor;
 
             }
+
             if (percentEuro[0] == '+')
             {
                 this.percentEuro.ForeColor = upColor;
@@ -124,13 +165,18 @@ namespace DovizBar
 
             }
 
-            averageDolar += Convert.ToDouble(dolar.Replace('.',','));
-            averageEuro += Convert.ToDouble(euro.Replace('.',','));
+            lblDolarBuy.Text = dolarBuy;
+            lblDolarSell.Text = dolarSell;
+            lblEuroBuy.Text = euroBuy;
+            lblEuroSell.Text = euroSell;
+
+            averageDolar += Convert.ToDouble(dolar.Replace('.', ','));
+            averageEuro += Convert.ToDouble(euro.Replace('.', ','));
             txtAverageDolar.Text = (averageDolar / updateCount).ToString(".0000");
             txtAverageEuro.Text = (averageEuro / updateCount).ToString(".0000");
 
-            var oldUpdateTime = txtLastUpdate.Text;
             txtLastUpdate.Text = DateTime.Now.ToLongTimeString();
+            timer2.Enabled = true;
         }
 
         private void UpdateDoviz()
@@ -148,22 +194,30 @@ namespace DovizBar
                 HtmlNodeCollection dovizler = document.DocumentNode.SelectNodes("//span[@class='menu-row2']");
                 UpdateScreen(dovizler[1].InnerText, dovizler[2].InnerText);
                 */
+                if (Currency.Count < 33)
+                {
+                    return;
+                }
+
                 if (InvokeRequired)
                 {
                     BeginInvoke(new DelegateUpdateScreen(() => UpdateScreen(
-                        Currency[18].InnerText, Currency[23].InnerText, Currency[21].InnerText, Currency[20].InnerText,
-                        Currency[28].InnerText, Currency[33].InnerText, Currency[31].InnerText, Currency[30].InnerText)));
+                        Currency[26].InnerText, Currency[31].InnerText, Currency[29].InnerText, Currency[28].InnerText,
+                        Currency[16].InnerText, Currency[21].InnerText, Currency[19].InnerText, Currency[18].InnerText,
+                        Currency[24].InnerText, Currency[25].InnerText, Currency[14].InnerText,
+                        Currency[15].InnerText)));
                 }
                 else
                 {
                     UpdateScreen(
-                        Currency[18].InnerText, Currency[23].InnerText, Currency[21].InnerText, Currency[20].InnerText,
-                        Currency[28].InnerText, Currency[33].InnerText, Currency[31].InnerText, Currency[30].InnerText);
+                        Currency[26].InnerText, Currency[31].InnerText, Currency[29].InnerText, Currency[28].InnerText,
+                        Currency[16].InnerText, Currency[21].InnerText, Currency[19].InnerText, Currency[18].InnerText,
+                        Currency[24].InnerText, Currency[25].InnerText, Currency[14].InnerText, Currency[15].InnerText);
                 }
 
                 txtLastUpdate.ForeColor = defaultTimeColor;
             }
-            catch (Exception e)
+            catch
             {
                 if (InvokeRequired)
                 {
@@ -173,12 +227,6 @@ namespace DovizBar
                 {
                     RefreshError();
                 }
-
-                timer1.Enabled = true;
-            }
-            finally
-            {
-                timer1.Enabled = true;
             }
         }
 
@@ -191,13 +239,82 @@ namespace DovizBar
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            PullData();
+            threadPull = new Thread(PullData);
+            threadPull.Start();
+        }
+
+        private void CheckGoal()
+        {
+            var dolarGoal = Properties.Settings.Default.DolarGoal;
+            var euroGoal = Properties.Settings.Default.EuroGoal;
+            var isDolarUp = Properties.Settings.Default.DolarGoalBool;
+            var isEuroUp = Properties.Settings.Default.EuroGoalBool;
+            var currentDolar = Convert.ToDouble(txtDolar.Text.Replace('.', ','));
+            var currentEuro = Convert.ToDouble(txtEuro.Text.Replace('.', ','));
+
+            if (dolarGoal != 0)
+            {
+                if (dolarGoal > currentDolar)
+                {
+                    if (!isDolarUp)
+                    {
+                        Form3.ResetGoal("USD");
+                        alertGoalSound.Play();
+                        MessageBox.Show(
+                            $"Dolar beklediğiniz seviyeye düştü. \n{DateTime.Now} => ({dolarGoal.ToString()} ▼ {currentDolar.ToString()})",
+                            "▼ DOLAR DÜŞTÜ ▼");
+                    }
+                }
+                else if (dolarGoal < currentDolar)
+                {
+                    if (isDolarUp)
+                    {
+                        Form3.ResetGoal("USD");
+                        alertGoalSound.Play();
+                        MessageBox.Show(
+                            $"Dolar beklediğiniz düzeye ulaştı. \n{DateTime.Now} => ({dolarGoal.ToString()} ▲ {currentDolar.ToString()})",
+                            "▲ DOLAR YÜKSELDİ ▲");
+                    }
+                }
+            }
+
+            if (euroGoal != 0)
+            {
+                if (euroGoal > currentEuro)
+                {
+                    if (!isEuroUp)
+                    {
+                        Form3.ResetGoal("EURO");
+                        alertGoalSound.Play();
+                        MessageBox.Show(
+                            $"Euro beklediğiniz seviyeye düştü. \n{DateTime.Now} => ({euroGoal.ToString()} - {currentEuro.ToString()})",
+                            "▼ EURO DÜŞTÜ ▼");
+                    }
+                }
+                else if (euroGoal < currentEuro)
+                {
+                    if (isEuroUp)
+                    {
+                        Form3.ResetGoal("EURO");
+                        alertGoalSound.Play();
+                        MessageBox.Show(
+                            $"Euro beklediğiniz düzeye ulaştı. \n{DateTime.Now} => ({euroGoal.ToString()} - {currentEuro.ToString()})",
+                            "▲ EURO YÜKSELDİ ▲");
+                    }
+                }
+            }
         }
 
         private void PullData()
         {
-            oldDolar = txtDolar.Text;
-            oldEuro = txtEuro.Text;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new DelegateUpdateScreen(UpdateOldCurrency));
+            }
+            else
+            {
+                UpdateOldCurrency();
+            }
 
             UpdateDoviz();
 
@@ -221,39 +338,58 @@ namespace DovizBar
                 RefreshRow();
             }
 
-            timer2.Enabled = true;
+            CheckGoal();
+        }
+
+        private void UpdateOldCurrency()
+        {
+            oldDolar = txtDolar.Text;
+            oldEuro = txtEuro.Text;
         }
 
         private void RefreshRow()
         {
-            if (Convert.ToDouble(oldDolar) < Convert.ToDouble(currentDolar))
+            double _oldDolar = Convert.ToDouble(oldDolar);
+            double _oldEuro = Convert.ToDouble(oldEuro);
+            double _currentDolar = Convert.ToDouble(currentDolar);
+            double _currentEuro = Convert.ToDouble(currentEuro);
+
+            if (_oldDolar < _currentDolar)
             {
                 rowDolar.Text = arrowUp;
                 rowDolar.ForeColor = upColor;
-                txtDolar.ForeColor = dolarUpdateColor;
+                txtDolar.ForeColor = upColor;
                 PlayAlertSound();
             }
-            else if (Convert.ToDouble(oldDolar) > Convert.ToDouble(currentDolar))
+            else if (_oldDolar > _currentDolar)
             {
                 rowDolar.Text = arrowDown;
                 rowDolar.ForeColor = downColor;
-                txtDolar.ForeColor = dolarUpdateColor;
+                txtDolar.ForeColor = downColor;
                 PlayAlertSound();
             }
+            else
+            {
+                rowDolar.Text = "";
+            }
 
-            if (Convert.ToDouble(oldEuro) < Convert.ToDouble(currentEuro))
+            if (_oldEuro < _currentEuro)
             {
                 rowEuro.Text = arrowUp;
                 rowEuro.ForeColor = upColor;
-                txtEuro.ForeColor = euroUpdateColor;
+                txtEuro.ForeColor = upColor;
                 PlayAlertSound();
             }
-            else if (Convert.ToDouble(oldEuro) > Convert.ToDouble(currentEuro))
+            else if (_oldEuro > _currentEuro)
             {
                 rowEuro.Text = arrowDown;
                 rowEuro.ForeColor = downColor;
-                txtEuro.ForeColor = euroUpdateColor;
+                txtEuro.ForeColor = downColor;
                 PlayAlertSound();
+            }
+            else
+            {
+                rowEuro.Text = "";
             }
         }
 
@@ -294,61 +430,111 @@ namespace DovizBar
 
         private void txtLastUpdate_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Coded with ♥ by bgoktugozdemir", $"v{Version}");
+            string notes = String.Empty;
+            string notesTarget =
+                "https://raw.githubusercontent.com/bgoktugozdemir/VersionChecker/master/DovizBar/Notes.txt";
+            using (WebClient client = new WebClient())
+            {
+                notes = client.DownloadString(notesTarget);
+            }
+
+            MessageBox.Show(notes, $"v{Program.Version}", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void CheckVersion()
+        private bool CheckVersion()
         {
-            string parser;
-            //string currentVersion = string.Empty;
-            string versionTarget = "https://raw.githubusercontent.com/bgoktugozdemir/VersionChecker/master/version.json";
+            string parser = string.Empty;
+            string versionTarget =
+                "https://raw.githubusercontent.com/bgoktugozdemir/VersionChecker/master/version.json";
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(versionTarget);
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
+                using (WebClient client = new WebClient())
                 {
-                    parser = reader.ReadToEnd();
+                    parser = client.DownloadString(versionTarget);
                 }
 
                 var json = JsonConvert.DeserializeObject<JsonDoviz>(parser);
-                double CurrentVersion = json.version;
+                Version CurrentVersion = Version.Parse(json.version);
 
-                if (CurrentVersion > Version)
+                if (CurrentVersion > Program.Version)
                 {
                     if (json.imperativeUpdate)
                     {
-                        MessageBox.Show($"Yeni sürüm mevcut! Bu güncellemeyi indirmeniz gerekmekte. {Version} => {CurrentVersion}","Zorunlu Güncelleme Mevcut", MessageBoxButtons.OK);
-                        DownloadUpdate();
+                        MessageBox.Show(
+                            $"Yeni sürüm mevcut! Bu güncellemeyi indirmeniz gerekmekte. \n({Program.Version} => {CurrentVersion})",
+                            "Zorunlu Güncelleme Mevcut", MessageBoxButtons.OK);
+                        NewDownloader();
+                        return true;
                     }
                     else
                     {
-                        if (MessageBox.Show($"Yeni sürüm mevcut! Güncellemek ister misiniz? {Version} => {CurrentVersion}", "Güncelleme Mevcut", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        if (MessageBox.Show(
+                                $"Yeni sürüm mevcut! Güncellemek ister misiniz? \n({Program.Version} => {CurrentVersion})",
+                                "Güncelleme Mevcut", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            DownloadUpdate();
+                            NewDownloader();
+                            return true;
                         }
                     }
                 }
+
+                return false;
             }
             catch (System.Net.WebException e)
             {
-                MessageBox.Show(e.ToString());
-                MessageBox.Show("İnternet bağlantısı bulunamadı!", "Bağlantı Yok", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "İnternet bağlantısı bulunamadı ya da Sistem başka bir uygulama tarafından kullanılıyor!\n" +
+                    e.ToString(), "Bağlantı Yok", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
-        private void DownloadUpdate()
+    private void DownloadUpdate()
         {
             var path = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             using (var client = new WebClient())
             {
-                client.DownloadFile("https://github.com/bgoktugozdemir/VersionChecker/raw/master/DovizBar/DovizBar_Updater.exe", path + @"/Installer.exe");
+                client.DownloadFile("https://github.com/bgoktugozdemir/VersionChecker/raw/master/DovizBar/D%C3%B6viz%20Bar%20Installer.msi", path + @"/Installer.msi");
 
-                Process setupProcess = Process.Start(path + @"/Installer.exe"); //System.AppDomain.CurrentDomain.BaseDirectory
-                setupProcess.Start();
-                Application.Exit();
+                Process setupProcess = Process.Start(path + @"/Installer.msi"); //System.AppDomain.CurrentDomain.BaseDirectory
+                Thread thread = new Thread(() => setupProcess.Start());
+                this.Close();
+            }
+        }
+
+        private void NewDownloader()
+        {
+            var path = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://github.com/bgoktugozdemir/VersionChecker/raw/master/DovizBar/DovizBar.exe", path + @"/temp.exe");
+
+                Process setupProcess = Process.Start(path + @"/temp.exe");
+                Thread thread = new Thread(() => setupProcess.Start());
+            }
+        }
+
+        private void Updater()
+        {
+            var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\DovizBar.exe";
+            var pathTemp = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\temp.exe";
+            if (AppDomain.CurrentDomain.FriendlyName == "temp.exe")
+            {
+                File.Delete(path);
+                File.Copy(pathTemp, path);
+                MessageBox.Show("Güncelleme Başarıyla Tamamlandı!");
+                Process process = Process.Start(path);
+                Environment.Exit(0);
+            }
+            else if (AppDomain.CurrentDomain.FriendlyName == "DovizBar.exe")
+            {
+                if (File.Exists(pathTemp))
+                    File.Delete(pathTemp);
+            }
+            else
+            {
+                NewDownloader();
             }
         }
 
@@ -385,13 +571,12 @@ namespace DovizBar
         {
             Form2 form2 = new Form2(this);
             form2.Show();
-            //SetRefreshTime();
         }
 
         public void SetRefreshTime()
         {
             timer1.Interval = Properties.Settings.Default.RefreshTime;
-            timer2.Interval = 500;
+            //timer2.Interval = 500;
         }
 
         private void lblLeft_Click(object sender, EventArgs e)
@@ -400,18 +585,16 @@ namespace DovizBar
             {
                 this.Width = this.MaximumSize.Width;
                 lblLeft.Text = ">";
-                timer1.Interval = 10000;
             }
             else
             {
                 this.Width = this.MinimumSize.Width;
                 lblLeft.Text = "<";
-                SetRefreshTime();
             }
             ChangePosition();
         }
 
-        private void KeyControl(object sender, KeyPressEventArgs e)
+        public static void KeyControl(object sender, KeyPressEventArgs e)
         {
             // Verify that the pressed key isn't CTRL or any non-numeric digit
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
@@ -432,9 +615,22 @@ namespace DovizBar
             if (e.KeyChar == (char)13)
             {
                 if(txtDolar.Text != "null")
-                { 
-                    txtCompareTl.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * Convert.ToDouble(txtDolar.Text.Replace('.', ','))).ToString("0.####");
-                    txtCompareEuro.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * (Convert.ToDouble(txtDolar.Text.Replace('.', ',')) / Convert.ToDouble(txtEuro.Text.Replace('.', ',')))).ToString("0.####");
+                {
+                    if (rbGeneral.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * Convert.ToDouble(txtDolar.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareEuro.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * (Convert.ToDouble(txtDolar.Text.Replace('.', ',')) / Convert.ToDouble(txtEuro.Text.Replace('.', ',')))).ToString("0.####");
+                    }
+                    else if (rbBuy.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * Convert.ToDouble(lblDolarBuy.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareEuro.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * (Convert.ToDouble(lblDolarBuy.Text.Replace('.', ',')) / Convert.ToDouble(lblEuroBuy.Text.Replace('.', ',')))).ToString("0.####");
+                    }
+                    else if (rbSell.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * Convert.ToDouble(lblDolarSell.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareEuro.Text = (Convert.ToDouble(txtCompareDolar.Text.Replace('.', ',')) * (Convert.ToDouble(lblDolarSell.Text.Replace('.', ',')) / Convert.ToDouble(lblEuroSell.Text.Replace('.', ',')))).ToString("0.####");
+                    }
                 }
             }
         }
@@ -446,8 +642,21 @@ namespace DovizBar
             {
                 if (txtEuro.Text != "null")
                 { 
-                    txtCompareTl.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * Convert.ToDouble(txtEuro.Text.Replace('.', ','))).ToString("0.####");
-                    txtCompareDolar.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * (Convert.ToDouble(txtEuro.Text.Replace('.', ',')) / Convert.ToDouble(txtDolar.Text.Replace('.', ',')))).ToString("0.####");
+                    if (rbGeneral.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * Convert.ToDouble(txtEuro.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareDolar.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * (Convert.ToDouble(txtEuro.Text.Replace('.', ',')) / Convert.ToDouble(txtDolar.Text.Replace('.', ',')))).ToString("0.####");
+                    }
+                    else if (rbBuy.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * Convert.ToDouble(lblEuroBuy.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareDolar.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * (Convert.ToDouble(lblEuroBuy.Text.Replace('.', ',')) / Convert.ToDouble(lblDolarBuy.Text.Replace('.', ',')))).ToString("0.####");
+                    }
+                    else if (rbSell.Checked)
+                    {
+                        txtCompareTl.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * Convert.ToDouble(lblEuroSell.Text.Replace('.', ','))).ToString("0.####");
+                        txtCompareDolar.Text = (Convert.ToDouble(txtCompareEuro.Text.Replace('.', ',')) * (Convert.ToDouble(lblEuroSell.Text.Replace('.', ',')) / Convert.ToDouble(lblDolarSell.Text.Replace('.', ',')))).ToString("0.####");
+                    }
                 }
             }
         }
@@ -463,6 +672,18 @@ namespace DovizBar
                     txtCompareEuro.Text = (Convert.ToDouble(txtCompareTl.Text.Replace('.', ',')) / Convert.ToDouble(txtEuro.Text.Replace('.', ','))).ToString("0.####");
                 }
             }
+        }
+
+        private void txtDolar_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3("USD", txtDolar.Text);
+            form3.Show();
+        }
+
+        private void txtEuro_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3("EURO", txtEuro.Text);
+            form3.Show();
         }
     }
 }

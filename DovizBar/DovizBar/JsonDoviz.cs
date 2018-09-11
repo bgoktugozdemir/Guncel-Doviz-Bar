@@ -8,7 +8,7 @@ namespace DovizBar
 {
     class JsonDoviz
     {
-        public double version;
+        public string version;
         public bool imperativeUpdate;
     }
 }

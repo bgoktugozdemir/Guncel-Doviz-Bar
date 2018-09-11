@@ -54,16 +54,27 @@
             this.percentEuro = new System.Windows.Forms.Label();
             this.btnSetUpdateTime = new System.Windows.Forms.Label();
             this.lblLeft = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.txtCompareEuro = new System.Windows.Forms.TextBox();
             this.txtCompareTl = new System.Windows.Forms.TextBox();
             this.txtCompareDolar = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblDolarBuy = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lblDolarSell = new System.Windows.Forms.Label();
+            this.lblEuroSell = new System.Windows.Forms.Label();
+            this.lblEuroBuy = new System.Windows.Forms.Label();
+            this.rbBuy = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rbGeneral = new System.Windows.Forms.RadioButton();
+            this.rbSell = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -94,6 +105,7 @@
             this.txtDolar.TabIndex = 1;
             this.txtDolar.Text = "null";
             this.txtDolar.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtDolar.Click += new System.EventHandler(this.txtDolar_Click);
             // 
             // label3
             // 
@@ -188,10 +200,11 @@
             this.txtEuro.TabIndex = 3;
             this.txtEuro.Text = "null";
             this.txtEuro.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtEuro.Click += new System.EventHandler(this.txtEuro_Click);
             // 
             // timer2
             // 
-            this.timer2.Interval = 500;
+            this.timer2.Interval = 750;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // alertPrefer
@@ -306,6 +319,8 @@
             this.btnExtend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExtend.AutoSize = true;
             this.btnExtend.BackColor = System.Drawing.Color.Transparent;
+            this.btnExtend.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnExtend.ForeColor = System.Drawing.Color.MediumOrchid;
             this.btnExtend.Location = new System.Drawing.Point(180, 217);
             this.btnExtend.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnExtend.Name = "btnExtend";
@@ -321,12 +336,12 @@
             this.txtAverageEuro.AutoSize = true;
             this.txtAverageEuro.BackColor = System.Drawing.Color.Transparent;
             this.txtAverageEuro.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.txtAverageEuro.Font = new System.Drawing.Font("Segoe UI", 10.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+            this.txtAverageEuro.Font = new System.Drawing.Font("Segoe UI Black", 10.25F, System.Drawing.FontStyle.Bold);
             this.txtAverageEuro.ForeColor = System.Drawing.Color.Gold;
             this.txtAverageEuro.Location = new System.Drawing.Point(187, 44);
             this.txtAverageEuro.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.txtAverageEuro.Name = "txtAverageEuro";
-            this.txtAverageEuro.Size = new System.Drawing.Size(44, 19);
+            this.txtAverageEuro.Size = new System.Drawing.Size(46, 19);
             this.txtAverageEuro.TabIndex = 17;
             this.txtAverageEuro.Text = "NULL";
             this.txtAverageEuro.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -337,12 +352,12 @@
             this.txtAverageDolar.AutoSize = true;
             this.txtAverageDolar.BackColor = System.Drawing.Color.Transparent;
             this.txtAverageDolar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.txtAverageDolar.Font = new System.Drawing.Font("Segoe UI", 10.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+            this.txtAverageDolar.Font = new System.Drawing.Font("Segoe UI Black", 10.25F, System.Drawing.FontStyle.Bold);
             this.txtAverageDolar.ForeColor = System.Drawing.Color.Gold;
             this.txtAverageDolar.Location = new System.Drawing.Point(120, 44);
             this.txtAverageDolar.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.txtAverageDolar.Name = "txtAverageDolar";
-            this.txtAverageDolar.Size = new System.Drawing.Size(44, 19);
+            this.txtAverageDolar.Size = new System.Drawing.Size(46, 19);
             this.txtAverageDolar.TabIndex = 16;
             this.txtAverageDolar.Text = "NULL";
             this.txtAverageDolar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -385,6 +400,7 @@
             this.btnSetUpdateTime.AutoSize = true;
             this.btnSetUpdateTime.BackColor = System.Drawing.Color.Transparent;
             this.btnSetUpdateTime.Font = new System.Drawing.Font("Segoe UI Black", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnSetUpdateTime.ForeColor = System.Drawing.Color.Orange;
             this.btnSetUpdateTime.Location = new System.Drawing.Point(162, 219);
             this.btnSetUpdateTime.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnSetUpdateTime.Name = "btnSetUpdateTime";
@@ -399,6 +415,8 @@
             this.lblLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLeft.AutoSize = true;
             this.lblLeft.BackColor = System.Drawing.Color.Transparent;
+            this.lblLeft.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblLeft.ForeColor = System.Drawing.Color.MediumOrchid;
             this.lblLeft.Location = new System.Drawing.Point(120, 105);
             this.lblLeft.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblLeft.Name = "lblLeft";
@@ -407,18 +425,6 @@
             this.lblLeft.Text = "<";
             this.lblLeft.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.lblLeft.Click += new System.EventHandler(this.lblLeft_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::DovizBar.Properties.Resources.icon;
-            this.pictureBox1.Location = new System.Drawing.Point(8, 17);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(108, 76);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 22;
-            this.pictureBox1.TabStop = false;
             // 
             // label2
             // 
@@ -464,6 +470,7 @@
             // 
             // txtCompareEuro
             // 
+            this.txtCompareEuro.AccessibleDescription = "Elinizdeki parayı buraya girebilirsiniz.";
             this.txtCompareEuro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCompareEuro.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(43)))), ((int)(((byte)(97)))));
             this.txtCompareEuro.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(162)));
@@ -472,11 +479,11 @@
             this.txtCompareEuro.Name = "txtCompareEuro";
             this.txtCompareEuro.Size = new System.Drawing.Size(93, 25);
             this.txtCompareEuro.TabIndex = 27;
-            this.txtCompareEuro.Text = "0";
             this.txtCompareEuro.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCompareEuro_KeyPress);
             // 
             // txtCompareTl
             // 
+            this.txtCompareTl.AccessibleDescription = "Elinizdeki parayı buraya girebilirsiniz.";
             this.txtCompareTl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCompareTl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(43)))), ((int)(((byte)(97)))));
             this.txtCompareTl.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(162)));
@@ -485,11 +492,11 @@
             this.txtCompareTl.Name = "txtCompareTl";
             this.txtCompareTl.Size = new System.Drawing.Size(93, 25);
             this.txtCompareTl.TabIndex = 28;
-            this.txtCompareTl.Text = "0";
             this.txtCompareTl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCompareTl_KeyPress);
             // 
             // txtCompareDolar
             // 
+            this.txtCompareDolar.AccessibleDescription = "Elinizdeki parayı buraya girebilirsiniz.";
             this.txtCompareDolar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCompareDolar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(43)))), ((int)(((byte)(97)))));
             this.txtCompareDolar.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(162)));
@@ -498,23 +505,205 @@
             this.txtCompareDolar.Name = "txtCompareDolar";
             this.txtCompareDolar.Size = new System.Drawing.Size(93, 25);
             this.txtCompareDolar.TabIndex = 26;
-            this.txtCompareDolar.Text = "0";
             this.txtCompareDolar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCompareDolar_KeyPress);
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.label7.Location = new System.Drawing.Point(35, 57);
+            this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(46, 19);
+            this.label7.TabIndex = 31;
+            this.label7.Text = "EURO";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblDolarBuy
+            // 
+            this.lblDolarBuy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDolarBuy.AutoSize = true;
+            this.lblDolarBuy.BackColor = System.Drawing.Color.Transparent;
+            this.lblDolarBuy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblDolarBuy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblDolarBuy.ForeColor = System.Drawing.Color.Gold;
+            this.lblDolarBuy.Location = new System.Drawing.Point(3, 40);
+            this.lblDolarBuy.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblDolarBuy.Name = "lblDolarBuy";
+            this.lblDolarBuy.Size = new System.Drawing.Size(39, 17);
+            this.lblDolarBuy.TabIndex = 30;
+            this.lblDolarBuy.Text = "NULL";
+            this.lblDolarBuy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.label9.Location = new System.Drawing.Point(30, 21);
+            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(56, 19);
+            this.label9.TabIndex = 29;
+            this.label9.Text = "DOLAR";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblDolarSell
+            // 
+            this.lblDolarSell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDolarSell.AutoSize = true;
+            this.lblDolarSell.BackColor = System.Drawing.Color.Transparent;
+            this.lblDolarSell.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblDolarSell.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblDolarSell.ForeColor = System.Drawing.Color.Gold;
+            this.lblDolarSell.Location = new System.Drawing.Point(75, 40);
+            this.lblDolarSell.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblDolarSell.Name = "lblDolarSell";
+            this.lblDolarSell.Size = new System.Drawing.Size(39, 17);
+            this.lblDolarSell.TabIndex = 33;
+            this.lblDolarSell.Text = "NULL";
+            this.lblDolarSell.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblEuroSell
+            // 
+            this.lblEuroSell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEuroSell.AutoSize = true;
+            this.lblEuroSell.BackColor = System.Drawing.Color.Transparent;
+            this.lblEuroSell.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblEuroSell.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblEuroSell.ForeColor = System.Drawing.Color.Gold;
+            this.lblEuroSell.Location = new System.Drawing.Point(75, 76);
+            this.lblEuroSell.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblEuroSell.Name = "lblEuroSell";
+            this.lblEuroSell.Size = new System.Drawing.Size(39, 17);
+            this.lblEuroSell.TabIndex = 35;
+            this.lblEuroSell.Text = "NULL";
+            this.lblEuroSell.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblEuroBuy
+            // 
+            this.lblEuroBuy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEuroBuy.AutoSize = true;
+            this.lblEuroBuy.BackColor = System.Drawing.Color.Transparent;
+            this.lblEuroBuy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.lblEuroBuy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblEuroBuy.ForeColor = System.Drawing.Color.Gold;
+            this.lblEuroBuy.Location = new System.Drawing.Point(3, 76);
+            this.lblEuroBuy.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblEuroBuy.Name = "lblEuroBuy";
+            this.lblEuroBuy.Size = new System.Drawing.Size(39, 17);
+            this.lblEuroBuy.TabIndex = 34;
+            this.lblEuroBuy.Text = "NULL";
+            this.lblEuroBuy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // rbBuy
+            // 
+            this.rbBuy.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.rbBuy.AutoSize = true;
+            this.rbBuy.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.rbBuy.Font = new System.Drawing.Font("Segoe UI Semilight", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rbBuy.Location = new System.Drawing.Point(16, 3);
+            this.rbBuy.Name = "rbBuy";
+            this.rbBuy.Size = new System.Drawing.Size(45, 21);
+            this.rbBuy.TabIndex = 36;
+            this.rbBuy.Text = "Alış";
+            this.rbBuy.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.Controls.Add(this.rbGeneral);
+            this.panel1.Controls.Add(this.rbSell);
+            this.panel1.Controls.Add(this.rbBuy);
+            this.panel1.Location = new System.Drawing.Point(50, 96);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(64, 109);
+            this.panel1.TabIndex = 37;
+            // 
+            // rbGeneral
+            // 
+            this.rbGeneral.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.rbGeneral.AutoSize = true;
+            this.rbGeneral.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.rbGeneral.Checked = true;
+            this.rbGeneral.Font = new System.Drawing.Font("Segoe UI Semilight", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rbGeneral.Location = new System.Drawing.Point(2, 88);
+            this.rbGeneral.Name = "rbGeneral";
+            this.rbGeneral.Size = new System.Drawing.Size(59, 21);
+            this.rbGeneral.TabIndex = 38;
+            this.rbGeneral.TabStop = true;
+            this.rbGeneral.Text = "Genel";
+            this.rbGeneral.UseVisualStyleBackColor = true;
+            // 
+            // rbSell
+            // 
+            this.rbSell.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.rbSell.AutoSize = true;
+            this.rbSell.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.rbSell.Font = new System.Drawing.Font("Segoe UI Semilight", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.rbSell.Location = new System.Drawing.Point(9, 48);
+            this.rbSell.Name = "rbSell";
+            this.rbSell.Size = new System.Drawing.Size(52, 21);
+            this.rbSell.TabIndex = 37;
+            this.rbSell.Text = "Satış";
+            this.rbSell.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Ebrima", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.Lavender;
+            this.label6.Location = new System.Drawing.Point(3, 6);
+            this.label6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(32, 15);
+            this.label6.TabIndex = 38;
+            this.label6.Text = "ALIŞ";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Ebrima", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Lavender;
+            this.label8.Location = new System.Drawing.Point(71, 6);
+            this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(40, 15);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "SATIŞ";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(43)))), ((int)(((byte)(97)))));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(240, 238);
             this.ControlBox = false;
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.lblEuroSell);
+            this.Controls.Add(this.lblEuroBuy);
+            this.Controls.Add(this.lblDolarSell);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.lblDolarBuy);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.txtCompareTl);
             this.Controls.Add(this.txtCompareEuro);
             this.Controls.Add(this.txtCompareDolar);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.lblLeft);
             this.Controls.Add(this.btnSetUpdateTime);
             this.Controls.Add(this.percentEuro);
@@ -537,6 +726,7 @@
             this.Controls.Add(this.txtMaxDolar);
             this.Controls.Add(this.txtMinDolar);
             this.Controls.Add(this.lblDolar);
+            this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -548,15 +738,15 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(120, 142);
             this.Name = "Form1";
-            this.Opacity = 0.7D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Bar";
+            this.Text = "Döviz Bar";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -589,12 +779,23 @@
         private System.Windows.Forms.Label btnSetUpdateTime;
         public System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblLeft;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtCompareEuro;
         private System.Windows.Forms.TextBox txtCompareTl;
         private System.Windows.Forms.TextBox txtCompareDolar;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblDolarBuy;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblDolarSell;
+        private System.Windows.Forms.Label lblEuroSell;
+        private System.Windows.Forms.Label lblEuroBuy;
+        private System.Windows.Forms.RadioButton rbBuy;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rbSell;
+        private System.Windows.Forms.RadioButton rbGeneral;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label8;
     }
 } 
